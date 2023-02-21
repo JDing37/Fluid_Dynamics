@@ -27,13 +27,18 @@ class MicrobialAdam:
     stepsBeforeFood = 0
     food_x = []
     food_y = []
+    size = 5
+    sizes = []
 
     def deltaPosition(self):
         self.spawnFood()
         while self.max_x > self.x_pos > self.min_x and self.max_y > self.y_pos > self.min_y and self.stepsBeforeFood < 10:
             if self.checkForFood(self.x_pos, self.y_pos):
+                self.size += 1
+                self.sizes.append(self.size)
                 self.stepsBeforeFood = 0
             else:
+                self.sizes.append(self.size)
                 self.stepsBeforeFood += 1
             delta_x = random.randint(10, 50)
             delta_y = random.randint(10, 50)
@@ -83,19 +88,16 @@ class MicrobialAdam:
         clock = pygame.time.Clock()
         clock.tick(60)
 
-        for i in range(len(self.food_x)):
-            pygame.draw.circle(screen, (0, 0, 230), (self.food_x[i], self.food_y[i]), 5)
-
         while True:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     pygame.quit()
                     sys.exit()
-            screen.fill((0, 0, 0))
+                screen.fill((0, 0, 0))
             for i in range(len(self.food_x)):
                 pygame.draw.circle(screen, (0, 0, 230), (self.food_x[i], self.food_y[i]), 5)
             for i in range(len(self.x_map)):
-                pygame.draw.circle(screen, (0, 230, 0), (self.x_map[i], self.y_map[i]), 5)
+                pygame.draw.circle(screen, (0, 230, 0), (self.x_map[i], self.y_map[i]), self.sizes[i])
                 pygame.display.update()
             clock.tick(1)
 
