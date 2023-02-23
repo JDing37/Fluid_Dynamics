@@ -32,7 +32,8 @@ class MicrobialAdam:
 
     def deltaPosition(self):
         self.spawnFood()
-        while self.max_x > self.x_pos > self.min_x and self.max_y > self.y_pos > self.min_y and self.stepsBeforeFood < 10:
+        while self.max_x > self.x_pos > self.min_x and self.max_y > self.y_pos > self.min_y \
+                and 0 < self.size < 15:
             if self.checkForFood(self.x_pos, self.y_pos):
                 self.size += 1
                 self.sizes.append(self.size)
@@ -40,6 +41,8 @@ class MicrobialAdam:
             else:
                 self.sizes.append(self.size)
                 self.stepsBeforeFood += 1
+            if self.stepsBeforeFood >= 5:
+                self.size -= 1
             delta_x = random.randint(10, 50)
             delta_y = random.randint(10, 50)
             x_subStep = random.random()
@@ -66,11 +69,11 @@ class MicrobialAdam:
             self.food_y.append(rand_food_y)
             food += 1
 
-    def checkForFood(self, x_pos, y_pos):
+    def checkForFood(self, x_pos, y_pos):  # bug - food must disappear
         answer = False
         for i in range(len(self.food_x)):
-            if self.food_x[i] - 30 <= x_pos <= self.food_x[i] + 30 and self.food_y[i] - 30 <= y_pos <= self.food_y[
-                i] + 30:
+            if self.food_x[i] - 30 <= x_pos <= self.food_x[i] + 30 \
+                    and self.food_y[i] - 30 <= y_pos <= self.food_y[i] + 30:
                 answer = True
         return answer
 
@@ -93,14 +96,13 @@ class MicrobialAdam:
                 if event.type == pygame.QUIT:
                     pygame.quit()
                     sys.exit()
-                screen.fill((0, 0, 0))
+            screen.fill((0, 0, 0))
             for i in range(len(self.food_x)):
                 pygame.draw.circle(screen, (0, 0, 230), (self.food_x[i], self.food_y[i]), 5)
             for i in range(len(self.x_map)):
                 pygame.draw.circle(screen, (0, 230, 0), (self.x_map[i], self.y_map[i]), self.sizes[i])
                 pygame.display.update()
             clock.tick(1)
-
 
 ma = MicrobialAdam()
 ma.liveGame()
